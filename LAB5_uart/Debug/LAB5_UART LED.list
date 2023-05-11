@@ -7,23 +7,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         00004ee4  080001a0  080001a0  000101a0  2**4
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       00000380  08005084  08005084  00015084  2**2
+  2 .rodata       000003a0  08005084  08005084  00015084  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  08005404  08005404  0002007c  2**0
+  3 .ARM.extab    00000000  08005424  08005424  0002007c  2**0
                   CONTENTS
-  4 .ARM          00000008  08005404  08005404  00015404  2**2
+  4 .ARM          00000008  08005424  08005424  00015424  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  0800540c  0800540c  0002007c  2**0
+  5 .preinit_array 00000000  0800542c  0800542c  0002007c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000004  0800540c  0800540c  0001540c  2**2
+  6 .init_array   00000004  0800542c  0800542c  0001542c  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  7 .fini_array   00000004  08005410  08005410  00015410  2**2
+  7 .fini_array   00000004  08005430  08005430  00015430  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  8 .data         0000007c  20000000  08005414  00020000  2**2
+  8 .data         0000007c  20000000  08005434  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          000003a0  2000007c  08005490  0002007c  2**2
+  9 .bss          000003a0  2000007c  080054b0  0002007c  2**2
                   ALLOC
- 10 ._user_heap_stack 00000604  2000041c  08005490  0002041c  2**0
+ 10 ._user_heap_stack 00000604  2000041c  080054b0  0002041c  2**0
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  0002007c  2**0
                   CONTENTS, READONLY
@@ -1920,7 +1920,7 @@ void StateOpenLED(state)
  800132e:	681b      	ldr	r3, [r3, #0]
  8001330:	2b00      	cmp	r3, #0
  8001332:	d111      	bne.n	8001358 <StateOpenLED+0x1c8>
-			sprintf((char*)TxBuffer, "state of blue button : press \r\nif Press x :back \r\n-----------------------\r\n");
+			sprintf((char*)TxBuffer, "  ===== Button Status =====\r\nstate of blue button : press \r\nif Press x :back \r\n-----------------------\r\n");
  8001334:	4955      	ldr	r1, [pc, #340]	; (800148c <StateOpenLED+0x2fc>)
  8001336:	484f      	ldr	r0, [pc, #316]	; (8001474 <StateOpenLED+0x2e4>)
  8001338:	f003 fa2a 	bl	8004790 <siprintf>
@@ -2094,7 +2094,7 @@ void StateOpenLED(state)
  8001488:	08005200 	.word	0x08005200
  800148c:	0800526c 	.word	0x0800526c
  8001490:	20000000 	.word	0x20000000
- 8001494:	080052b8 	.word	0x080052b8
+ 8001494:	080052d8 	.word	0x080052d8
 			else if(condition == 2 && Hz == 1)
  8001498:	4b3d      	ldr	r3, [pc, #244]	; (8001590 <StateOpenLED+0x400>)
  800149a:	681b      	ldr	r3, [r3, #0]
@@ -2229,13 +2229,13 @@ void StateOpenLED(state)
  800158e:	bd80      	pop	{r7, pc}
  8001590:	20000004 	.word	0x20000004
  8001594:	20000000 	.word	0x20000000
- 8001598:	080052e8 	.word	0x080052e8
+ 8001598:	08005308 	.word	0x08005308
  800159c:	20000204 	.word	0x20000204
  80015a0:	20000098 	.word	0x20000098
  80015a4:	08005118 	.word	0x08005118
  80015a8:	20000008 	.word	0x20000008
- 80015ac:	08005340 	.word	0x08005340
- 80015b0:	08005368 	.word	0x08005368
+ 80015ac:	08005360 	.word	0x08005360
+ 80015b0:	08005388 	.word	0x08005388
 
 080015b4 <DummyTask>:
 
@@ -3040,7 +3040,7 @@ LoopFillZerobss:
   ldr r1, =_edata
  8001970:	2000007c 	.word	0x2000007c
   ldr r2, =_sidata
- 8001974:	08005414 	.word	0x08005414
+ 8001974:	08005434 	.word	0x08005434
   ldr r2, =_sbss
  8001978:	2000007c 	.word	0x2000007c
   ldr r4, =_ebss
@@ -4983,7 +4983,7 @@ static uint32_t DMA_CalcBaseAndBitshift(DMA_HandleTypeDef *hdma)
  800238c:	4770      	bx	lr
  800238e:	bf00      	nop
  8002390:	aaaaaaab 	.word	0xaaaaaaab
- 8002394:	080053c8 	.word	0x080053c8
+ 8002394:	080053e8 	.word	0x080053e8
 
 08002398 <DMA_CheckFifoParam>:
   * @param  hdma       pointer to a DMA_HandleTypeDef structure that contains
@@ -7015,7 +7015,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
  8002ed6:	bf00      	nop
  8002ed8:	40023c00 	.word	0x40023c00
  8002edc:	40023800 	.word	0x40023800
- 8002ee0:	080053b0 	.word	0x080053b0
+ 8002ee0:	080053d0 	.word	0x080053d0
  8002ee4:	2000000c 	.word	0x2000000c
  8002ee8:	20000010 	.word	0x20000010
 
@@ -7317,7 +7317,7 @@ uint32_t HAL_RCC_GetPCLK1Freq(void)
  800312c:	4618      	mov	r0, r3
  800312e:	bd80      	pop	{r7, pc}
  8003130:	40023800 	.word	0x40023800
- 8003134:	080053c0 	.word	0x080053c0
+ 8003134:	080053e0 	.word	0x080053e0
 
 08003138 <HAL_RCC_GetPCLK2Freq>:
   * @note   Each time PCLK2 changes, this function must be called to update the
@@ -7343,7 +7343,7 @@ uint32_t HAL_RCC_GetPCLK2Freq(void)
  8003154:	4618      	mov	r0, r3
  8003156:	bd80      	pop	{r7, pc}
  8003158:	40023800 	.word	0x40023800
- 800315c:	080053c0 	.word	0x080053c0
+ 800315c:	080053e0 	.word	0x080053e0
 
 08003160 <HAL_UART_Init>:
   * @param  huart  Pointer to a UART_HandleTypeDef structure that contains
@@ -10808,10 +10808,10 @@ static void UART_SetConfig(UART_HandleTypeDef *huart)
  800476a:	4798      	blx	r3
  800476c:	3601      	adds	r6, #1
  800476e:	e7f2      	b.n	8004756 <__libc_init_array+0x1e>
- 8004770:	0800540c 	.word	0x0800540c
- 8004774:	0800540c 	.word	0x0800540c
- 8004778:	0800540c 	.word	0x0800540c
- 800477c:	08005410 	.word	0x08005410
+ 8004770:	0800542c 	.word	0x0800542c
+ 8004774:	0800542c 	.word	0x0800542c
+ 8004778:	0800542c 	.word	0x0800542c
+ 800477c:	08005430 	.word	0x08005430
 
 08004780 <memset>:
  8004780:	4402      	add	r2, r0
@@ -11129,11 +11129,11 @@ static void UART_SetConfig(UART_HandleTypeDef *huart)
  8004a6c:	f000 f87a 	bl	8004b64 <_printf_i>
  8004a70:	e7eb      	b.n	8004a4a <_svfiprintf_r+0x1c2>
  8004a72:	bf00      	nop
- 8004a74:	080053d0 	.word	0x080053d0
- 8004a78:	080053da 	.word	0x080053da
+ 8004a74:	080053f0 	.word	0x080053f0
+ 8004a78:	080053fa 	.word	0x080053fa
  8004a7c:	00000000 	.word	0x00000000
  8004a80:	080047d1 	.word	0x080047d1
- 8004a84:	080053d6 	.word	0x080053d6
+ 8004a84:	080053f6 	.word	0x080053f6
 
 08004a88 <_printf_common>:
  8004a88:	e92d 47f0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, lr}
@@ -11469,8 +11469,8 @@ static void UART_SetConfig(UART_HandleTypeDef *huart)
  8004da0:	f104 0619 	add.w	r6, r4, #25
  8004da4:	e7f5      	b.n	8004d92 <_printf_i+0x22e>
  8004da6:	bf00      	nop
- 8004da8:	080053e1 	.word	0x080053e1
- 8004dac:	080053f2 	.word	0x080053f2
+ 8004da8:	08005401 	.word	0x08005401
+ 8004dac:	08005412 	.word	0x08005412
 
 08004db0 <memcpy>:
  8004db0:	440a      	add	r2, r1

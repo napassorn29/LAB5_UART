@@ -358,7 +358,7 @@ void StateOpenLED(state)
 			}
 			else if(condition == 1 || condition == 3 && statePin == 0)
 			{
-			sprintf((char*)TxBuffer, "state of blue button : press \r\nif Press x :back \r\n-----------------------\r\n");
+			sprintf((char*)TxBuffer, "  ===== Button Status =====\r\nstate of blue button : press \r\nif Press x :back \r\n-----------------------\r\n");
 			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
 			condition = 3;
 			}
