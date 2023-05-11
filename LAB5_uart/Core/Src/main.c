@@ -118,12 +118,16 @@ int main(void)
   uint8_t text[] = "if Press 0 : LED Control\r\nif Press 1 : Button Status   \r\n";
   HAL_UART_Transmit(&huart2, text, 58, 10);
 
+
+  UARTDMAConfig();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  DummyTask();
 	  statePin = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
 	  if (openclose == 1)
 	  {
@@ -202,7 +206,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 460800;
+  huart2.Init.BaudRate = 921600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
