@@ -22,6 +22,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include "stdio.h"
+#include "string.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,6 +48,20 @@ DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
 
+int t_frequancy = 5;
+float millisec;
+
+uint8_t RxBuffer[100];
+uint8_t TxBuffer[500];
+uint32_t timestamp = 0;
+
+int statePin;
+int textState;
+uint8_t state = 'x';
+int condition = 1;
+int openclose = 1;
+int button;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -53,6 +70,11 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
+
+void DummyTask();
+void UARTDMAConfig();
+void statePress();
+void StateOpenLED(button);
 
 /* USER CODE END PFP */
 
@@ -93,12 +115,24 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  uint8_t text[] = "if Press 0 : LED Control\r\nif Press 1 : Button Status   \r\n";
+  HAL_UART_Transmit(&huart2, text, 58, 10);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  statePin = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+	  if (openclose == 1)
+	  {
+		  DummyTask();
+	  }
+	  else if (openclose == 0)
+	  {
+		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5,0);
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -168,7 +202,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
+  huart2.Init.BaudRate = 460800;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
@@ -238,6 +272,191 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void UARTDMAConfig()
+{
+	//start UART in DMA Mode
+	HAL_UART_Receive_DMA(&huart2, RxBuffer, 1);
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	if(huart == &huart2)
+	{
+		RxBuffer[1] = '\0';
+		if(RxBuffer[0]=='x')button = 'x';
+		else if(RxBuffer[0]=='0')button = '0';
+		else if(RxBuffer[0]=='1')button = '1';
+		else if(RxBuffer[0]=='a')button = 'a';
+		else if(RxBuffer[0]=='s')button = 's';
+		else if(RxBuffer[0]=='d')
+		{
+			button = 'd';
+			if (openclose == 1)
+			{
+				openclose = 0;
+			}
+			else if (openclose == 0)
+			{
+				openclose = 1;
+			}
+		}
+		else button = 'z';
+
+		StateOpenLED(button);
+	}
+}
+
+void StateOpenLED(state)
+{
+	switch(state)
+	{
+		case 'x':
+		{
+			if (condition == 2 || condition == 1 || condition == 3)
+			{
+			sprintf((char*)TxBuffer, "if Press 0 : LED Control\r\nif Press 1 : Button Status \r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 1;
+			}
+			else
+			{
+			sprintf((char*)TxBuffer, "Press something again please\r\nplease press x for back\r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 2;
+			}
+		}
+		break;
+
+		case '0':
+		{
+			if (condition == 1)
+			{
+			sprintf((char*)TxBuffer, "  ===== LED Control =====\r\nPress a : speed up +1 Hz \r\nPress s : speed down -1 Hz \r\nPress d : On/off \r\nPress x : back \r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 2;
+			}
+			else
+			{
+			sprintf((char*)TxBuffer, "Press something again please\r\nplease press x for back\r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 2;
+			}
+		}
+		break;
+
+		case '1':
+		{
+			if(condition == 1 || condition == 3 && statePin == 1)
+			{
+			sprintf((char*)TxBuffer, "  ===== Button Status =====\r\nstate of blue button : unpress \r\nif Press x :back \r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 3;
+			}
+			else if(condition == 1 || condition == 3 && statePin == 0)
+			{
+			sprintf((char*)TxBuffer, "state of blue button : press \r\nif Press x :back \r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 3;
+			}
+			else
+			{
+			sprintf((char*)TxBuffer, "Press something again please\r\nplease press x for back\r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 2;
+			}
+		}
+		break;
+
+		case 'z':
+		{
+			if (condition == 1 ||condition == 0 ||condition == 2 ||condition == 3 )
+			{
+			sprintf((char*)TxBuffer, "Press something again please\r\nplease press x for back\r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 2;
+			}
+		}
+		break;
+
+		case 'a':
+		{
+			if(condition == 2)
+			{
+			t_frequancy = t_frequancy + 1;
+			sprintf((char*)TxBuffer, "frequancy : %d Hz \r\n-----------------------\r\n", t_frequancy);
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 2;
+			}
+			else
+			{
+			sprintf((char*)TxBuffer, "Press something again please\r\nplease press x for back\r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 2;
+			}
+		}
+		break;
+
+		case 's':
+		{
+			if(condition == 2 && t_frequancy >= 1)
+			{
+			t_frequancy = t_frequancy - 1;
+			sprintf((char*)TxBuffer, "frequancy : %d Hz \r\n-----------------------\r\n", t_frequancy);
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 2;
+			}
+			else if(condition == 2 && t_frequancy == 0)
+			{
+			t_frequancy = 0;
+			sprintf((char*)TxBuffer, "frequancy less than 0 Hz\r\nplease press a for speed up +1 Hz\r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 2;
+			}
+			else
+			{
+			sprintf((char*)TxBuffer, "Press something again please\r\nplease press x for back\r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 2;
+			}
+		}
+		break;
+
+		case 'd':
+		{
+			if(condition == 2 && openclose == 1)
+			{
+			sprintf((char*)TxBuffer, "open LED \r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 2;
+			}
+			else if(condition == 2 && openclose == 0)
+			{
+			sprintf((char*)TxBuffer, "close LED \r\nyou can press d for open LED \r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 2;
+			}
+			else
+			{
+			sprintf((char*)TxBuffer, "Press something again please\r\nplease press x for back\r\n-----------------------\r\n");
+			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
+			condition = 2;
+			}
+		}
+		break;
+	}
+}
+
+void DummyTask()
+{
+	static uint32_t timestamp = 0;
+	if(HAL_GetTick()>=timestamp)
+	{
+		millisec = (1.0/t_frequancy)*1000;
+		timestamp = HAL_GetTick()+ millisec;
+		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+	}
+}
 
 /* USER CODE END 4 */
 
