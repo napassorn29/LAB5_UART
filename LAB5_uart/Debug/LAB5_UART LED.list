@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  0002007c  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00008d4c  00000000  00000000  000200ac  2**0
+ 12 .debug_info   00008d4b  00000000  00000000  000200ac  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00001722  00000000  00000000  00028df8  2**0
+ 13 .debug_abbrev 00001735  00000000  00000000  00028df7  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 000006f8  00000000  00000000  0002a520  2**3
+ 14 .debug_aranges 000006f8  00000000  00000000  0002a530  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00000670  00000000  00000000  0002ac18  2**3
+ 15 .debug_ranges 00000670  00000000  00000000  0002ac28  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00015973  00000000  00000000  0002b288  2**0
+ 16 .debug_macro  00015973  00000000  00000000  0002b298  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00008e43  00000000  00000000  00040bfb  2**0
+ 17 .debug_line   00008e43  00000000  00000000  00040c0b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00085e3d  00000000  00000000  00049a3e  2**0
+ 18 .debug_str    00085e31  00000000  00000000  00049a4e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  000cf87b  2**0
+ 19 .comment      00000050  00000000  00000000  000cf87f  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00002060  00000000  00000000  000cf8cc  2**2
+ 20 .debug_frame  00002060  00000000  00000000  000cf8d0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1999,14 +1999,14 @@ void StateOpenLED(state)
  80013c6:	681b      	ldr	r3, [r3, #0]
  80013c8:	2b02      	cmp	r3, #2
  80013ca:	d11a      	bne.n	8001402 <StateOpenLED+0x272>
-			t_frequancy = t_frequancy + 1;
+			Hz = Hz + 1;
  80013cc:	4b30      	ldr	r3, [pc, #192]	; (8001490 <StateOpenLED+0x300>)
  80013ce:	881b      	ldrh	r3, [r3, #0]
  80013d0:	3301      	adds	r3, #1
  80013d2:	b29a      	uxth	r2, r3
  80013d4:	4b2e      	ldr	r3, [pc, #184]	; (8001490 <StateOpenLED+0x300>)
  80013d6:	801a      	strh	r2, [r3, #0]
-			sprintf((char*)TxBuffer, "frequancy : %d Hz \r\n-----------------------\r\n", t_frequancy);
+			sprintf((char*)TxBuffer, "frequancy : %d Hz \r\n-----------------------\r\n", Hz);
  80013d8:	4b2d      	ldr	r3, [pc, #180]	; (8001490 <StateOpenLED+0x300>)
  80013da:	881b      	ldrh	r3, [r3, #0]
  80013dc:	461a      	mov	r2, r3
@@ -2047,7 +2047,7 @@ void StateOpenLED(state)
  8001422:	601a      	str	r2, [r3, #0]
 		break;
  8001424:	e0b0      	b.n	8001588 <StateOpenLED+0x3f8>
-			if(condition == 2 && t_frequancy >= 2)
+			if(condition == 2 && Hz >= 2)
  8001426:	4b11      	ldr	r3, [pc, #68]	; (800146c <StateOpenLED+0x2dc>)
  8001428:	681b      	ldr	r3, [r3, #0]
  800142a:	2b02      	cmp	r3, #2
@@ -2056,14 +2056,14 @@ void StateOpenLED(state)
  8001430:	881b      	ldrh	r3, [r3, #0]
  8001432:	2b01      	cmp	r3, #1
  8001434:	d930      	bls.n	8001498 <StateOpenLED+0x308>
-			t_frequancy = t_frequancy - 1;
+			Hz = Hz - 1;
  8001436:	4b16      	ldr	r3, [pc, #88]	; (8001490 <StateOpenLED+0x300>)
  8001438:	881b      	ldrh	r3, [r3, #0]
  800143a:	3b01      	subs	r3, #1
  800143c:	b29a      	uxth	r2, r3
  800143e:	4b14      	ldr	r3, [pc, #80]	; (8001490 <StateOpenLED+0x300>)
  8001440:	801a      	strh	r2, [r3, #0]
-			sprintf((char*)TxBuffer, "frequancy : %d Hz \r\n-----------------------\r\n", t_frequancy);
+			sprintf((char*)TxBuffer, "frequancy : %d Hz \r\n-----------------------\r\n", Hz);
  8001442:	4b13      	ldr	r3, [pc, #76]	; (8001490 <StateOpenLED+0x300>)
  8001444:	881b      	ldrh	r3, [r3, #0]
  8001446:	461a      	mov	r2, r3
@@ -2095,7 +2095,7 @@ void StateOpenLED(state)
  800148c:	0800526c 	.word	0x0800526c
  8001490:	20000000 	.word	0x20000000
  8001494:	080052b8 	.word	0x080052b8
-			else if(condition == 2 && t_frequancy == 1)
+			else if(condition == 2 && Hz == 1)
  8001498:	4b3d      	ldr	r3, [pc, #244]	; (8001590 <StateOpenLED+0x400>)
  800149a:	681b      	ldr	r3, [r3, #0]
  800149c:	2b02      	cmp	r3, #2
@@ -2104,7 +2104,7 @@ void StateOpenLED(state)
  80014a2:	881b      	ldrh	r3, [r3, #0]
  80014a4:	2b01      	cmp	r3, #1
  80014a6:	d114      	bne.n	80014d2 <StateOpenLED+0x342>
-			t_frequancy = 1;
+			Hz = 1;
  80014a8:	4b3a      	ldr	r3, [pc, #232]	; (8001594 <StateOpenLED+0x404>)
  80014aa:	2201      	movs	r2, #1
  80014ac:	801a      	strh	r2, [r3, #0]
@@ -2252,7 +2252,7 @@ void DummyTask()
  80015c2:	429a      	cmp	r2, r3
  80015c4:	d332      	bcc.n	800162c <DummyTask+0x78>
 	{
-		millisec = (1.0/t_frequancy)*500;
+		millisec = (1.0/Hz)*500;
  80015c6:	4b1b      	ldr	r3, [pc, #108]	; (8001634 <DummyTask+0x80>)
  80015c8:	881b      	ldrh	r3, [r3, #0]
  80015ca:	4618      	mov	r0, r3

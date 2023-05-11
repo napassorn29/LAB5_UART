@@ -48,7 +48,7 @@ DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
 
-uint16_t t_frequancy = 5;
+uint16_t Hz = 5;
 float millisec;
 
 uint8_t RxBuffer[100];
@@ -386,8 +386,8 @@ void StateOpenLED(state)
 		{
 			if(condition == 2)
 			{
-			t_frequancy = t_frequancy + 1;
-			sprintf((char*)TxBuffer, "frequancy : %d Hz \r\n-----------------------\r\n", t_frequancy);
+			Hz = Hz + 1;
+			sprintf((char*)TxBuffer, "frequancy : %d Hz \r\n-----------------------\r\n", Hz);
 			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
 			condition = 2;
 			}
@@ -402,16 +402,16 @@ void StateOpenLED(state)
 
 		case 's':
 		{
-			if(condition == 2 && t_frequancy >= 2)
+			if(condition == 2 && Hz >= 2)
 			{
-			t_frequancy = t_frequancy - 1;
-			sprintf((char*)TxBuffer, "frequancy : %d Hz \r\n-----------------------\r\n", t_frequancy);
+			Hz = Hz - 1;
+			sprintf((char*)TxBuffer, "frequancy : %d Hz \r\n-----------------------\r\n", Hz);
 			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
 			condition = 2;
 			}
-			else if(condition == 2 && t_frequancy == 1)
+			else if(condition == 2 && Hz == 1)
 			{
-			t_frequancy = 1;
+			Hz = 1;
 			sprintf((char*)TxBuffer, "frequancy less than 1 Hz\r\nplease press a for speed up +1 Hz\r\n-----------------------\r\n");
 			HAL_UART_Transmit_DMA(&huart2, TxBuffer, strlen((char*)TxBuffer));
 			condition = 2;
@@ -455,7 +455,7 @@ void DummyTask()
 	static uint32_t timestamp = 0;
 	if(HAL_GetTick()>=timestamp)
 	{
-		millisec = (1.0/t_frequancy)*500;
+		millisec = (1.0/Hz)*500;
 		timestamp = HAL_GetTick()+ millisec;
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	}
